@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>家常菜谱集</title>
+<style>
+:root{
+  --bg:#fff8f0; --card:#ffffff; --ink:#33302b; --sub:#8a7f70; --line:#f0e2d2;
+  --acc:#c1502e; --acc-soft:#fdeee6; --heat-bg:#fff3e0; --heat-line:#e8862e;
+  --tip-bg:#eef6ec; --buy-bg:#eef3fa; --chip:#f3e9db; --mask:rgba(40,25,15,0.55);
+}
+html.dark{
+  --bg:#1d1a17; --card:#2a2521; --ink:#f0e8de; --sub:#b3a693; --line:#453b32;
+  --acc:#e07a52; --acc-soft:#3d2c22; --heat-bg:#3a2c1c; --heat-line:#e8862e;
+  --tip-bg:#263326; --buy-bg:#232c3a; --chip:#38302a; --mask:rgba(0,0,0,0.7);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+body{margin:0; background:var(--bg); color:var(--ink); font-size:17px; line-height:1.65;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.wrap{max-width:1100px; margin:0 auto; padding:16px 14px 60px}
+.topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0 4px}
+.brand{font-size:26px; font-weight:800; letter-spacing:1px}
+.brand-sub{color:var(--sub); font-size:14px; margin-top:2px}
+.dark-btn{border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px;
+  padding:8px 14px; font-size:15px; cursor:pointer; flex:none}
+.season{margin:14px 0 4px; background:var(--acc-soft); border:1px solid var(--line); border-radius:14px;
+  padding:12px 14px; font-size:15px}
+.season-title{font-weight:700; color:var(--acc); margin-bottom:4px}
+.searchbar{margin:16px 0 10px}
+.search-input{width:100%; padding:13px 16px; font-size:17px; border-radius:12px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink); outline:none}
+.search-input:focus{border-color:var(--acc)}
+.filters{margin:6px 0 4px}
+.filter-group{display:flex; align-items:flex-start; gap:8px; margin:8px 0; flex-wrap:wrap}
+.filter-label{font-size:14px; color:var(--sub); padding-top:7px; flex:none; width:38px}
+.chip{border:1px solid var(--line); background:var(--chip); color:var(--ink); border-radius:999px;
+  padding:6px 14px; font-size:15px; cursor:pointer}
+.chip-on{background:var(--acc); border-color:var(--acc); color:#fff; font-weight:700}
+.count-line{color:var(--sub); font-size:14px; margin:14px 0 10px}
+.grid{display:grid; grid-template-columns:1fr; gap:14px}
+@media (min-width:640px){ .grid{grid-template-columns:repeat(2,1fr)} }
+@media (min-width:1024px){ .grid{grid-template-columns:repeat(3,1fr)} }
+.card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px;
+  cursor:pointer; transition:transform 0.2s ease, box-shadow 0.2s ease}
+.card:active{transform:scale(0.98)}
+.card-name{font-size:20px; font-weight:800; margin-bottom:8px}
+.card-tags{display:flex; flex-wrap:wrap; gap:6px}
+.tag{font-size:13px; border-radius:999px; padding:2px 10px; background:var(--chip); color:var(--ink)}
+.tag-cuisine{background:var(--acc); color:#fff; font-weight:700}
+.tag-type{background:var(--acc-soft); color:var(--acc); font-weight:700}
+.tag-time{background:transparent; border:1px solid var(--line); color:var(--sub)}
+.card-desc{color:var(--sub); font-size:14px; margin-top:10px}
+.empty{text-align:center; color:var(--sub); padding:50px 0; font-size:16px}
+.modal-mask{display:none; position:fixed; inset:0; background:var(--mask); z-index:50;
+  align-items:flex-end; justify-content:center}
+.modal-mask-open{display:flex}
+.modal{background:var(--bg); width:100%; max-width:760px; max-height:92vh; overflow-y:auto;
+  border-radius:20px 20px 0 0; padding:20px 18px 40px; animation:up 0.25s ease}
+@media (min-width:700px){ .modal-mask{align-items:center} .modal{border-radius:20px} }
+@keyframes up{ from{transform:translateY(24px); opacity:0.4} to{transform:translateY(0); opacity:1} }
+.modal-close{position:sticky; top:0; float:right; border:1px solid var(--line); background:var(--card);
+  color:var(--ink); border-radius:999px; width:38px; height:38px; font-size:18px; cursor:pointer; z-index:2}
+.d-title{font-size:24px; font-weight:800; margin:4px 0 8px}
+.d-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+.d-sec{margin:20px 0}
+.d-sec-title{font-size:18px; font-weight:800; color:var(--acc); margin-bottom:8px}
+.ing-list{margin:0; padding-left:20px}
+.ing-item{margin:4px 0}
+.step-list{display:flex; flex-direction:column; gap:10px}
+.step-item{display:flex; gap:10px; background:var(--card); border:1px solid var(--line);
+  border-radius:12px; padding:10px 12px}
+.step-num{background:var(--acc); color:#fff; font-weight:800; border-radius:999px;
+  width:26px; height:26px; text-align:center; line-height:26px; flex:none; font-size:15px}
+.step-text{flex:1}
+.step-time{flex:none; color:var(--acc); font-weight:700; font-size:14px; padding-top:2px}
+.heat-box{background:var(--heat-bg); border:1.5px solid var(--heat-line); border-radius:12px;
+  padding:12px 14px; font-size:16px}
+.tip-box{background:var(--tip-bg); border-radius:12px; padding:12px 14px}
+.buy-box{background:var(--buy-bg); border-radius:12px; padding:12px 14px}
+.box-label{font-weight:800; margin-bottom:4px}
+.src-note{color:var(--sub); font-size:14px; background:var(--card); border:1px dashed var(--line);
+  border-radius:12px; padding:10px 12px}
+.sec-block{margin:16px 0}
+.sec-title{font-size:17px; font-weight:800; margin-bottom:6px}
+.sec-list{margin:0; padding-left:20px}
+.sec-item{margin:5px 0}
+.footer-note{color:var(--sub); font-size:13px; text-align:center; margin-top:36px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="brand">🍲 家常菜谱集</div>
+      <div class="brand-sub">妈妈模式 · 饮食 —— 做过的、攒下的，都在这儿</div>
+    </div>
+    <button class="dark-btn" id="darkBtn" type="button">🌙 深色</button>
+  </div>
+
+  <div class="season">
+    <div class="season-title">🥬 11 月郑州应季采购</div>
+    <div>应季：白萝卜、南瓜、山药、莲藕、菠菜、上海青、芹菜、鲜香菇。渠道：盒马（净菜鲜切方便）· 鲜风生活 / 华豫百家（本地连锁、叶菜新鲜）· 菜市场（新鲜上限）。</div>
+  </div>
+
+  <div class="searchbar">
+    <input class="search-input" id="searchInput" type="search" placeholder="搜菜名、食材、品牌，比如：羊肉 / 香菇 / 名扬">
+  </div>
+
+  <div class="filters">
+    <div class="filter-group" id="fgCuisine">
+      <div class="filter-label">菜系</div>
+    </div>
+    <div class="filter-group" id="fgType">
+      <div class="filter-label">类型</div>
+    </div>
+    <div class="filter-group" id="fgTaste">
+      <div class="filter-label">口味</div>
+    </div>
+  </div>
+
+  <div class="count-line" id="countLine"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="emptyBox" style="display:none">没找到合适的，换个关键词试试 🍳</div>
+  <div class="footer-note">家常菜谱集 · 内容来自日常做饭积累与公开讨论整理，品牌口碑为网友评价、仅供参考</div>
+</div>
+
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+"use strict";
+const ENTRIES = [
+{id:"mapo", name:"麻婆豆腐", cuisine:"川菜", type:"菜谱", taste:"味重", time:"约15分钟", level:"新手友好", servings:"2-3人份",
+ desc:"川菜入门第一道：麻辣鲜香，豆腐嫩、肉末香，下饭神器。",
+ ingredients:["嫩豆腐 400g","牛肉末 80g","豆瓣酱 1大勺","豆豉 1小勺","花椒粉（现磨）1小勺","蒜末、葱花 适量","高汤或水 200ml","水淀粉 适量"],
+ steps:[["豆腐切2cm方块，入加盐的开水焯2分钟捞出，去豆腥又定型","3分钟"],
+ ["热锅凉油，牛肉末煸炒变色，加豆瓣酱、豆豉、蒜末小火炒出红油","3分钟"],
+ ["倒高汤烧开，下豆腐，小火烧入味","5分钟"],
+ ["分三次勾芡、每次推匀，撒葱花，起锅前撒花椒粉","4分钟"]],
+ heat:"豆瓣酱要小火慢炒出红油，火大易焦发苦；豆腐下锅后用推勺不用铲翻，避免碎。",
+ tips:"花椒粉一定起锅前撒、现磨最香；勾芡分三次，豆腐才亮汪汪不碎。孕晚期改良：豆瓣酱减半、花椒粉少放，就是温和版。",
+ buy:"盒马有嫩豆腐和现成牛肉末，省事。", source:"", sections:[]},
+{id:"huiguo", name:"回锅肉", cuisine:"川菜", type:"菜谱", taste:"味重", time:"约25分钟", level:"家常难度", servings:"2-3人份",
+ desc:"川菜之首：先煮后炒，肉片卷成灯盏窝，蒜苗一衬，香得冒泡。",
+ ingredients:["五花肉 300g","蒜苗 100g","郫县豆瓣 1大勺","甜面酱 1小勺","姜片、料酒 适量"],
+ steps:[["五花肉冷水下锅，加姜片料酒，烧开转小火煮至筷子能戳透，捞出","15分钟"],
+ ["晾凉切3mm薄片，温热时切最顺手","3分钟"],
+ ["干锅下肉片，中小火煸出油、边缘微卷，加豆瓣酱甜面酱炒出红亮","4分钟"],
+ ["下蒜苗白段翻炒，再下蒜苗叶段，断生即出锅","3分钟"]],
+ heat:"肉片要煸出「灯盏窝」（边缘卷曲）才算到位；豆瓣下锅后转小火炒香，别炒糊。",
+ tips:"蒜苗后下、保持脆嫩；煮肉的汤别倒，留着下面条或炖菜都是宝。",
+ buy:"蒜苗郑州菜市场和华豫百家都有，挑细嫩不老的。", source:"", sections:[]},
+{id:"gongbao", name:"宫保鸡丁", cuisine:"川菜", type:"菜谱", taste:"味重", time:"约20分钟", level:"家常难度", servings:"2-3人份",
+ desc:"糊辣香加小荔枝口：酸甜微辣，鸡丁滑嫩，花生酥脆。",
+ ingredients:["鸡腿肉 300g（去骨切丁）","干辣椒 8个","花椒 1小勺","花生米 50g","葱姜蒜丁 适量","料汁：生抽2勺、香醋1.5勺、白糖1勺、料酒1勺、水淀粉1勺（提前调好）"],
+ steps:[["鸡丁加料酒、生抽、淀粉抓匀腌制；花生米冷油下锅小火炸脆捞出","10分钟"],
+ ["热锅凉油，下干辣椒段、花椒小火炝出糊辣香，别炒黑","1分钟"],
+ ["下鸡丁大火滑散变色，加葱姜蒜丁","3分钟"],
+ ["沿锅边倒入料汁，大火收汁裹匀，撒花生米出锅","2分钟"]],
+ heat:"干辣椒花椒必须小火炝香，炒过了头发苦；收汁要大火快收，汁才裹得住鸡丁。",
+ tips:"「小荔枝口」（酸甜微辣）全靠提前调好的那碗料汁，临场再调必乱套。",
+ buy:"盒马有去骨鸡腿肉和净花生米，省去剔骨。", source:"", sections:[]},
+{id:"lajiao-chao-rou", name:"辣椒炒肉", cuisine:"湘菜", type:"菜谱", taste:"味重", time:"约15分钟", level:"新手友好", servings:"2-3人份",
+ desc:"湘菜馆的招牌下饭菜：辣椒炒出虎皮，肉片带着锅气。",
+ ingredients:["五花肉 200g","螺丝椒或杭椒 200g","豆豉 1小勺","蒜末 适量","生抽、老抽 少许"],
+ steps:[["五花肉切片，干锅煸出油后盛出","5分钟"],
+ ["用煸出的猪油下蒜末、豆豉爆香","1分钟"],
+ ["下辣椒大火炒至虎皮状、断生","4分钟"],
+ ["肉片回锅，加生抽、少许老抽调色，大火翻炒出锅","2分钟"]],
+ heat:"全程大火，辣椒要炒出虎皮（表面起焦斑）才有香辣味；火小出水，辣椒就蔫了。",
+ tips:"怕辣先去籽；煸出的猪油别多留，菜才不腻。孕晚期吃：辣椒减半、豆豉少放。",
+ buy:"螺丝椒郑州菜市场常见，鲜风生活的辣椒也新鲜。", source:"", sections:[]},
+{id:"duojiao-yu", name:"剁椒蒸鱼", cuisine:"湘菜", type:"菜谱", taste:"家常", time:"约25分钟", level:"新手友好", servings:"2-3人份",
+ desc:"宴客撑场面的一道：剁椒红亮，鱼肉嫩，热油一浇香气冲。",
+ ingredients:["鲈鱼 1条约500g（或鱼头半个）","剁椒 3大勺","姜丝、葱花 适量","蒸鱼豉油、料酒 适量"],
+ steps:[["鱼两面各划3刀，抹料酒、姜丝，腌制去腥","10分钟"],
+ ["鱼身铺满剁椒（连汤汁一起），水开上锅大火蒸","10-12分钟"],
+ ["出锅倒掉盘中腥水，撒葱花，浇一勺烧到冒烟的热油，沿盘边淋蒸鱼豉油","3分钟"]],
+ heat:"一定水开后再上锅、大火足汽蒸；时间宁短勿长，蒸老了肉发柴。",
+ tips:"蒸完倒掉腥水这步不能省；剁椒咸度够，全程不用再加盐。",
+ buy:"盒马鲈鱼可代杀；剁椒买颜色红亮、酸香足的瓶装即可。", source:"", sections:[]},
+{id:"maoshi-hongshao", name:"毛氏红烧肉", cuisine:"湘菜", type:"菜谱", taste:"家常", time:"约1小时", level:"周末练手", servings:"2-3人份",
+ desc:"不放酱油膏的湘派红烧肉：糖色红亮，干辣椒的焦香是点睛。",
+ ingredients:["五花肉 500g","干辣椒 5个","姜蒜 适量","八角 2个","桂皮 1小段","生抽、老抽、冰糖 适量"],
+ steps:[["五花肉切3cm方块，冷水下锅焯水去浮沫，捞出洗净","8分钟"],
+ ["少油下冰糖小火炒出枣红色糖色，下肉块裹匀","5分钟"],
+ ["加干辣椒、姜蒜、八角桂皮、生抽老抽，加开水没过肉，大火烧开转小火炖","40分钟"],
+ ["大火收汁，汤汁浓稠裹住肉块即可","5分钟"]],
+ heat:"糖色要小火慢炒到枣红，过了头就发苦；炖的时候小火微沸，肉才酥而不散。",
+ tips:"毛氏做法突出干辣椒焦香；糖色到位，颜色才红亮不发黑。",
+ buy:"五花肉选三肥七瘦、层次分明的，菜市场现切最好。", source:"", sections:[]},
+{id:"qiukui", name:"清炒秋葵", cuisine:"家常", type:"菜谱", taste:"清淡", time:"约10分钟", level:"新手友好", servings:"2-3人份",
+ desc:"清清爽爽的一盘绿：脆嫩不黏，蒜香打底，几分钟上桌。",
+ ingredients:["秋葵 300g","蒜 3瓣","盐 少许","生抽 1小勺","食用油 适量"],
+ steps:[["秋葵洗净，整根入沸水焯1分钟，捞出过凉水沥干，去蒂切斜段","3分钟"],
+ ["热锅凉油，下蒜末小火爆香","1分钟"],
+ ["下秋葵大火快炒，加盐、生抽调味，断生立刻出锅","2分钟"]],
+ heat:"关键就两条：整根焯水1分钟再切，不流黏液、不变色；大火快炒1-2分钟断生即出，久炒发黏变黄。",
+ tips:"焯水时加几滴油和少许盐，颜色更翠绿；千万别切好了再焯，黏液会流一锅。",
+ buy:"秋葵挑细嫩、绒毛完整的，捏起来硬挺的更新鲜；盒马和菜市场都有。", source:"", sections:[]},
+{id:"nangua", name:"清炒南瓜", cuisine:"家常", type:"菜谱", taste:"清淡", time:"约12分钟", level:"新手友好", servings:"2-3人份",
+ desc:"11月老南瓜正甜：煸出焦边再焖，软糯香甜，不用多余调料。",
+ ingredients:["老南瓜 400g","蒜 2瓣","盐 少许","白糖 1小撮（可选）","食用油 适量"],
+ steps:[["南瓜去皮去瓤，切2-3mm薄片","3分钟"],
+ ["热锅凉油，中小火下南瓜片煸炒、勤翻动，至边缘微微焦黄","5分钟"],
+ ["沿锅边加少量水（约3汤匙），盖盖焖至软糯","3分钟"],
+ ["开盖加盐、少许糖提味，大火收干水汽出锅","1分钟"]],
+ heat:"南瓜含糖高、容易焦糖化糊底，中小火勤翻；焖时水别多，多了就成糊了。",
+ tips:"老南瓜切薄片，中小火煸至边缘微焦再焖，甜香最足。",
+ buy:"11月南瓜当季，菜市场和华豫百家便宜又面甜，挑沉手、瓜皮硬的。", source:"", sections:[]},
+{id:"huzi", name:"清炒瓠子", cuisine:"家常", type:"菜谱", taste:"清淡", time:"约10分钟", level:"新手友好", servings:"2-3人份",
+ desc:"清甜水嫩的夏味小炒；现在是反季货，更要挑嫩的、先尝后炒。",
+ ingredients:["嫩瓠子 1根约400g","蒜 3瓣","盐 少许","食用油 适量","小半碗热水"],
+ steps:[["瓠子去皮切薄片；先尝一小片生的，不苦才能下锅","2分钟"],
+ ["热锅凉油，下蒜末爆香","1分钟"],
+ ["下瓠子片大火快炒至微微透亮","2分钟"],
+ ["沿锅边加小半碗热水，盖盖焖2分钟，加盐调味出锅","3分钟"]],
+ heat:"⚠️ 安全第一：发苦的瓠子含葫芦素，不能吃！下锅前先尝一小片，不苦再炒，苦的整根丢弃。瓠子旺季是夏天，现在靠大棚和外地货，务必挑嫩的。",
+ tips:"瓠子要嫩：表皮光亮、指甲能掐进去的才好；它焖后出水多，盐最后放。",
+ buy:"鲜风生活、华豫百家偶有大棚瓠子，菜市场更常见；挑细长匀称、没斑点的。", source:"", sections:[]},
+{id:"xiaoqingcai", name:"清炒小青菜", cuisine:"家常", type:"菜谱", taste:"清淡", time:"约6分钟", level:"新手友好", servings:"2-3人份",
+ desc:"最家常也最见功夫：热水一激，菜梗脆、菜叶甜，三分钟出锅。",
+ ingredients:["小青菜（上海青）400g","蒜 3瓣","盐 少许","食用油 适量","小半碗热水"],
+ steps:[["青菜洗净，菜梗和菜叶分开，梗部斜切","2分钟"],
+ ["锅烧热倒油，油热下蒜末和菜梗，大火翻炒","1分钟"],
+ ["沿锅边加小半碗热水快速升温，下菜叶大翻炒","1分钟"],
+ ["菜叶回软立刻加盐出锅，全程下锅不超过3分钟","1分钟"]],
+ heat:"家里人口诀：锅热油热、先下菜梗、沿锅边加小半碗热水快速升温、菜叶回软立刻出锅——脆甜不变色，全程大火。",
+ tips:"梗叶分开下锅是脆嫩的关键；盐最后放，防止出水。",
+ buy:"上海青11月应季，鲜风生活、华豫百家叶菜新鲜；盒马有净菜版更省事。", source:"", sections:[]},
+{id:"huluobo-rou", name:"胡萝卜炒肉", cuisine:"家常", type:"菜谱", taste:"家常", time:"约15分钟", level:"新手友好", servings:"2-3人份",
+ desc:"胡萝卜先用油煸透，甜味和营养一起出来，肉片滑嫩不柴。",
+ ingredients:["胡萝卜 2根约300g","猪里脊或梅花肉 150g","生抽、料酒、淀粉 适量","姜丝、盐 适量","食用油 适量"],
+ steps:[["胡萝卜切细丝；肉片加料酒、生抽、淀粉抓匀腌制备用","5分钟"],
+ ["热锅凉油，中小火下胡萝卜丝煸炒，至变软、油变橘色，盛出","3分钟"],
+ ["另起锅热油，大火下肉片滑炒变色","2分钟"],
+ ["胡萝卜丝回锅，加姜丝、盐、生抽，大火合炒出锅","1分钟"]],
+ heat:"胡萝卜素是脂溶性的，必须先用油中小火煸约3分钟，油变橘色才算把营养和甜味煸出来；大火急炒会外焦里生。",
+ tips:"肉片先滑炒盛出再回锅，不柴；胡萝卜丝切匀，熟得齐整。",
+ buy:"胡萝卜郑州全年好买，菜市场带泥的更甜；盒马有现成胡萝卜丝。", source:"", sections:[]},
+{id:"qincai-rou", name:"芹菜炒肉", cuisine:"家常", type:"菜谱", taste:"家常", time:"约12分钟", level:"新手友好", servings:"2-3人份",
+ desc:"芹菜脆生、肉丝滑嫩，大火快炒的一盘清爽下饭菜。",
+ ingredients:["芹菜 300g","猪肉丝 150g","生抽、料酒、淀粉 适量","姜丝、盐 适量","干辣椒（可选）"],
+ steps:[["肉丝加料酒、生抽、淀粉和少许油抓匀上浆腌制；芹菜去叶切段、粗梗剖开","5分钟"],
+ ["热锅凉油，下肉丝大火滑散变色，盛出","2分钟"],
+ ["底油下姜丝（和干辣椒）爆香，下芹菜大火快炒至断生","2分钟"],
+ ["肉丝回锅，加盐、生抽，大火合炒30秒出锅","1分钟"]],
+ heat:"芹菜大火快炒1-2分钟保脆，久炒出水变韧、颜色发暗；下锅前把水沥干，锅气才足。",
+ tips:"肉丝上浆是滑嫩关键，最后拌一点油锁水；芹菜叶别扔，留着摊鸡蛋。",
+ buy:"11月芹菜应季，华豫百家和菜市场的本地芹菜细而香；盒马有净菜芹菜段。", source:"", sections:[]},
+{id:"xianggu-qingcai", name:"香菇青菜", cuisine:"家常", type:"菜谱", taste:"清淡", time:"约12分钟", level:"新手友好", servings:"2-3人份",
+ desc:"香菇先干煸出香味，再衬青菜的清甜，蚝油一提鲜就够了。",
+ ingredients:["鲜香菇 8朵约200g","上海青或小白菜 300g","蒜 2瓣","蚝油 1大勺","生抽 1小勺","盐 少许"],
+ steps:[["香菇洗净切片，青菜洗净、梗叶分开","3分钟"],
+ ["干锅或少油，中小火下香菇片干煸，先逼出水汽、再煎出香味","3分钟"],
+ ["下蒜末和菜梗，大火翻炒","1分钟"],
+ ["下菜叶，加蚝油、生抽、少许盐，大火炒至叶软出锅","2分钟"]],
+ heat:"鲜香菇先中小火干煸出水汽、煎出香味，再大火下青菜；香菇带着水直接炒，会水汪汪没香味。",
+ tips:"蚝油提鲜，这道菜不用再放糖和味精；香菇伞盖下的褶皱要冲洗干净。",
+ buy:"11月鲜香菇应季，菜市场和盒马都有，挑伞盖紧实、不开伞的。", source:"", sections:[]},
+{id:"xianggu-ji", name:"香菇滑鸡", cuisine:"家常", type:"菜谱", taste:"家常", time:"约25分钟", level:"家常难度", servings:"2-3人份",
+ desc:"干香菇的醇香焖进鸡块里，汤汁拌饭一绝，家常下饭硬菜。",
+ ingredients:["鸡腿 2只约500g（切块）","干香菇 8朵","姜片、葱段 适量","生抽 2大勺","老抽 1小勺","料酒、冰糖、淀粉 适量"],
+ steps:[["干香菇温水泡发，泡发水留用；鸡块加料酒、生抽、淀粉抓匀","20分钟（备菜，可提前）"],
+ ["热锅凉油，下鸡块中火煸至表面微黄","5分钟"],
+ ["下姜片、香菇翻炒，加生抽、老抽、冰糖，倒入香菇泡发水没过鸡块","3分钟"],
+ ["中小火焖至鸡肉软嫩，大火收汁，撒葱段出锅","15分钟"]],
+ heat:"鸡块先煸到微黄再焖，香味才厚；焖时中小火微沸，收汁别收干，留点汁拌饭。",
+ tips:"香菇泡发水是鲜味来源，倒的时候留底，别把沙沉下去；鸡块别切太小，焖完会缩水。",
+ buy:"干香菇菜市场干货摊或盒马都有，挑厚实、香味浓的；三黄鸡更香。", source:"", sections:[]},
+{id:"congbai-yangrou", name:"葱爆羊肉", cuisine:"家常", type:"菜谱", taste:"味重", time:"约12分钟", level:"家常难度", servings:"2-3人份",
+ desc:"京味儿的爆炒：大火大葱爆羊肉，从下锅到出锅就一两分钟的事。",
+ ingredients:["羊腿肉或羊里脊 300g（切薄片）","大葱 2根（切滚刀段）","姜丝 适量","生抽、料酒 适量","盐 少许"],
+ steps:[["羊肉片加料酒、生抽、少许淀粉和油抓匀腌制","5分钟（备菜）"],
+ ["锅烧到冒烟，倒油，下羊肉片大火滑散","1分钟"],
+ ["羊肉一变色，立刻下大葱段、姜丝","30秒"],
+ ["沿锅边烹料酒，加盐、生抽，大火颠炒出锅","30秒"]],
+ heat:"全程最大火！羊肉滑散变色立刻下大葱段，30秒出锅；火小出水，就成了煮肉，葱也塌了。",
+ tips:"羊肉片切薄、别叠团，下锅先摊开别急着翻；大葱只用葱白段更甜。",
+ buy:"盒马有鲜切羊腿肉片；菜市场回民肉摊的更新鲜，挑色泽鲜红不发暗的。", source:"", sections:[]},
+{id:"ziran-yangrou", name:"孜然羊肉", cuisine:"家常", type:"菜谱", taste:"味重", time:"约15分钟", level:"家常难度", servings:"2-3人份",
+ desc:"烧烤摊的灵魂搬进厨房：先干煸去膻，孜然最后炝香。",
+ ingredients:["羊腿肉 300g（切薄片或小丁）","洋葱 半个","孜然粉 1大勺","辣椒面 1小勺","熟白芝麻 适量","生抽、料酒、淀粉 适量","香菜（可选）"],
+ steps:[["羊肉加料酒、生抽、淀粉抓匀腌制","5分钟（备菜）"],
+ ["干锅或少油，下羊肉中火干煸，先逼出水汽，至水分收干、边缘微焦","5分钟"],
+ ["加少许油，下洋葱丝大火翻炒","1分钟"],
+ ["撒孜然粉、辣椒面，大火炝香，撒白芝麻（和香菜）出锅","1分钟"]],
+ heat:"羊肉先干煸逼出水汽去膻，水分不收干，孜然撒下去就成水煮味了；孜然粉最后大火炝一下才香。",
+ tips:"孜然粉分两次：一半煸时入味，一半出锅前炝香；怕膻选羊腿肉，少肥少筋膜。",
+ buy:"孜然粉菜市场调料摊现磨的最香；羊肉盒马鲜切或回民肉摊都行。", source:"", sections:[]},
+{id:"luobo-niunan", name:"萝卜炖牛腩", cuisine:"家常", type:"菜谱", taste:"家常", time:"约1.5小时", level:"周末练手", servings:"2-3人份",
+ desc:"11月白萝卜配牛腩：肉酥烂、萝卜吸饱肉汁，清甜不腻。高压锅版全程约25分钟。",
+ ingredients:["牛腩 500g","白萝卜 1根约500g","姜片、葱段 适量","八角 2个","桂皮 1小段","生抽、老抽、料酒、冰糖、盐 适量"],
+ steps:[["牛腩切块，冷水下锅加料酒焯水，撇沫捞出，用热水洗净","8分钟"],
+ ["热锅少油，下牛腩煸炒，加姜葱、八角桂皮、生抽老抽冰糖炒匀","5分钟"],
+ ["加热水没过肉面，大火烧开转小火慢炖","1小时"],
+ ["白萝卜切滚刀块下锅，再炖至萝卜透明、牛腩酥烂，加盐调味","20分钟"]],
+ heat:"牛腩焯水后必须热水下锅、加热水炖，冷水一激肉就柴；萝卜等肉炖软后再下，下早了烂成糊、还没肉味。",
+ tips:"高压锅版：牛腩上汽压15分钟，放气后下萝卜再压8分钟，全程约25分钟。萝卜选11月应季白萝卜，水分足、自带清甜。",
+ buy:"白萝卜11月正应季，菜市场和华豫百家又便宜又水灵，挑沉手、表皮光滑的；牛腩盒马和牛肉摊都有。", source:"", sections:[]},
+{id:"huoguo", name:"在家复刻川渝火锅", cuisine:"火锅", type:"讨论", taste:"味重", time:"讨论整理", level:"经验帖整理", servings:"",
+ desc:"V2EX 网友讨论订正版：锅底香不香，核心是牛油够不够。配比、品牌、油碟、买肉避坑全在这篇。",
+ ingredients:[], steps:[], heat:"", tips:"", buy:"",
+ source:"来源：V2EX《请指教，如何在家复刻川渝火锅》（楼主 gooddeveloper，2026-11-03 发帖；2026-11-04 复核时已 82 条回复，按全文订正）。这是网友讨论整理，不是高举本人的经历或偏好；品牌口碑均为帖内个人评价，有分歧、非定论。",
+ sections:[
+ {t:"一、配比口径（油和料分开算，三个口径并存）", items:[
+  "邮寄套装口径：成都/重庆本地火锅店邮寄装约 50 元/套 ＝ 一斤油 + 一斤底料 + 调味粉 + 花椒辣椒；配水不要太多，2 斤左右就够。",
+  "家用锅口径：直径 28-34cm 普通锅，一锅水直接放一斤火锅底料；底料选特辣不要微辣，另加鸡精等调味。",
+  "油料比口径：核心是「一包底料、两包油」，油要舍得放；也有人说锅底量至少是自己以为的四倍以上。",
+  "争议项：有人说「等水开再下底料是关键」，也有人先下料加凉水，帖内未定论。",
+  "进阶做法：底料切碎、小火先炒出油再加骨汤/开水；或热油先炒香大葱、花椒、干辣椒、生姜再下底料炒化；补味靠姜、大葱段、干花椒辣椒、醪糟、鸡精、五香八角。"]},
+ {t:"二、为什么包装底料不够香", items:[
+  "网上买的底料油渣比太低，可能 3:1 甚至更低；要香就得猛加牛油——单独买不咸的纯牛油配普通底料。",
+  "一句话总结：外面好吃就两条——牛油和大火。"]},
+ {t:"三、牛油品牌（单买补油）", items:[
+  "森态牛油：名扬底料想更香更浓时加它。",
+  "秋霞：是「牛油锅底」（底料本身牛油足），被说比较接近当地口味；重庆认的牌子里也有秋霞。",
+  "叮咚上买牛油火锅底料、多放几块也行。"]},
+ {t:"四、底料品牌口碑（帖内评价，分歧大）", items:[
+  "名扬：提及最多、多人主力，楼主最后也退了周大签改买名扬；但有人说名扬吃到后面发酸。",
+  "桥头：有家庭常备；重庆认德庄、桥头、秋霞；但桥头要煮 30 分钟辣味才出来，可作入门款。",
+  "四川本地口径：红 99、大红袍——「家里和周边人只认这两个」，便宜选红 99。",
+  "其他被推荐：德庄、好人家、王家渡（外面一般买不到）、麻辣江湖（有人推清油版，更清爽）、麻辣空间、挑爷（淘宝，牛油非常足，像连锁店味）、山姆的火锅底料（更适合外地人、不燥辣、带高汤包）。",
+  "饭巢：有人说比名扬还好吃（转述，待验证）。王刚：有人推荐，有人买过说性价比不高。",
+  "网红款：王胖娃、李命佳、歪炀炀，仅个别提及。",
+  "差评明确：周大签、文成——买过的人说能尝出牛油生腥味；但也有人说周大签不错，属分歧项。"]},
+ {t:"五、油碟与香油（帖内有分歧）", items:[
+  "一派：火锅香油本就是调和油（芝麻油+玉米油），纯芝麻香油苦味重、不适合当油碟。",
+  "另一派：自己吃买纯芝麻的，不要调和的。",
+  "品牌：油碟香油可选馨田。",
+  "蘸料共识：蒜要给足，「超级多的蒜 + 油碟，无敌」；成品蒜蓉口碑一般，能现剁最好。",
+  "蘸料进阶方（「牛肉受得醋辣子」）：半碗姜蒜、葱花、2 个小米辣，可加花椒面/贵州辣椒面，一勺鸡精，半碗味极鲜，保宁醋、香油、盐适量；最后烧油至冒烟淋入碗中「呲香」。"]},
+ {t:"六、肉与食材（品类错位 + 处理法）", items:[
+  "品类错位：吊龙、匙柄是潮汕牛肉火锅的吃法（屠宰后几小时上桌、配清汤），不适配川渝红油锅；川渝锅更搭毛肚、黄喉、内脏下水。坚持牛肉+辣锅+油碟也可以，但属混搭。",
+  "川渝吃牛肉要处理：黄牛后腿肉上浆裹糊辣椒面，或牛肉片裹泡椒、酸豇豆、香菜芹菜；鲜牛肉不处理，在红油锅里极易煮老。",
+  "四川家庭处理法：牛肉/肥牛/吊龙优先菜市场或大超市新鲜刀切；拿回来只淋菜籽油（备选花生油）手抓匀，冰箱冷藏 10 分钟，千万别放盐。还可以放半只清远鸡打锅底。",
+  "增味平替：牛尾巴（焯水冻存，吃时高压锅先压再入锅）、牛腩、排骨 + 土豆 + 年糕片、油条、千张，经济实惠。",
+  "买肉渠道：山姆肥牛性价比被多人认可，山姆牛肉丸质感仅次于海底捞；盒马相对可选肥胼 + 吊龙或牛肉拼盘（约 2 人量），火锅豆花手掰下锅；农贸市场鲜切是上限。",
+  "必备配菜参考：豆腐皮、腐竹、无骨鸭掌、香豆干、金针菇、脆皮肠、三秒海带、蓬蒿、西洋菜。",
+  "外地难复刻：黑/粉色嫩毛肚、耗儿鱼、火箭鱿鱼、卤大肠，江浙难买，网购冷冻款多人反馈腥臭，不建议硬凑；冻货腥多与反复解冻、未做去腥处理有关。"]},
+ {t:"七、热量纠偏", items:[
+  "红油锅底 + 油碟热量爆炸，和麻酱碟差不多，都是高脂肪；换油碟不等于减脂，牛肉也不自动等于不长胖。",
+  "控热量路线：降频率，或清水潮汕吃法（白水 + 葱姜 + 萝卜玉米块煮底）。"]},
+ {t:"八、老油与健康（收录口径取谨慎侧）", items:[
+  "帖内多人点破：重庆老火锅的香一部分来自老油回收，甚至有人把吃完的油冻存下次复用。",
+  "但也有重庆网友明确提醒老油回收不健康。本条口径：在家不模仿老油回收复用，只记「店里香的原因之一」这一事实。"]},
+ {t:"九、落地结论 / 最小可行版", items:[
+  "不会炒料又追求地道，不如出去吃（海底捞只是「能吃、算不上特别好」）；自己做胜在乐趣，性价比和体验大概率不如店里。",
+  "吃完散味要提前想好。",
+  "最小可行版：油料分离邮寄装（1 斤油 + 1 斤料）或名扬等底料 + 另补牛油，水约 2 斤，姜葱段、花椒干辣椒补香，肉走山姆/盒马，油碟蒜给足。"]}
+ ]}
+];
+</script>
+<script>
+"use strict";
+const state = {cuisine:"全部", type:"全部", taste:"全部", kw:""};
+const CUISINES = ["全部","川菜","湘菜","家常","火锅"];
+const TYPES = ["全部","菜谱","讨论"];
+const TASTES = ["全部","清淡","家常","味重"];
+const grid = document.getElementById("grid");
+const emptyBox = document.getElementById("emptyBox");
+const countLine = document.getElementById("countLine");
+const modalMask = document.getElementById("modalMask");
+const modalBox = document.getElementById("modalBox");
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function buildChips(boxId, list, key){
+  const box = document.getElementById(boxId);
+  list.forEach(function(v){
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip" + (state[key] === v ? " chip-on" : "");
+    b.textContent = v;
+    b.addEventListener("click", function(){
+      state[key] = v;
+      box.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("chip-on"); });
+      b.classList.add("chip-on");
+      render();
+    });
+    box.appendChild(b);
+  });
+}
+buildChips("fgCuisine", CUISINES, "cuisine");
+buildChips("fgType", TYPES, "type");
+buildChips("fgTaste", TASTES, "taste");
+
+function matchKw(e){
+  if(!state.kw) return true;
+  const parts = [e.name, e.cuisine, e.type, e.taste, e.desc, e.tips, e.buy];
+  (e.ingredients || []).forEach(function(x){ parts.push(x); });
+  (e.sections || []).forEach(function(s){ parts.push(s.t); s.items.forEach(function(x){ parts.push(x); }); });
+  return parts.join(" ").toLowerCase().indexOf(state.kw) >= 0;
+}
+function render(){
+  const list = ENTRIES.filter(function(e){
+    return (state.cuisine === "全部" || e.cuisine === state.cuisine)
+      && (state.type === "全部" || e.type === state.type)
+      && (state.taste === "全部" || e.taste === state.taste)
+      && matchKw(e);
+  });
+  grid.innerHTML = "";
+  list.forEach(function(e){
+    const card = document.createElement("div");
+    card.className = "card";
+    let tags = "<span class='tag tag-cuisine'>" + esc(e.cuisine) + "</span>"
+      + "<span class='tag tag-type'>" + esc(e.type) + "</span>";
+    if(e.taste) tags += "<span class='tag'>" + esc(e.taste) + "</span>";
+    tags += "<span class='tag tag-time'>⏱ " + esc(e.time) + "</span>";
+    card.innerHTML = "<div class='card-name'>" + esc(e.name) + "</div>"
+      + "<div class='card-tags'>" + tags + "</div>"
+      + "<div class='card-desc'>" + esc(e.desc) + "</div>";
+    card.addEventListener("click", function(){ openDetail(e); });
+    grid.appendChild(card);
+  });
+  emptyBox.style.display = list.length ? "none" : "block";
+  countLine.textContent = "共 " + list.length + " 条（总收录 " + ENTRIES.length + " 条）";
+}
+document.getElementById("searchInput").addEventListener("input", function(ev){
+  state.kw = ev.target.value.trim().toLowerCase();
+  render();
+});
+
+function openDetail(e){
+  let h = "<button class='modal-close' id='modalClose' type='button'>✕</button>";
+  h += "<div class='d-title'>" + esc(e.name) + "</div>";
+  let meta = "<span class='tag tag-cuisine'>" + esc(e.cuisine) + "</span>"
+    + "<span class='tag tag-type'>" + esc(e.type) + "</span>";
+  if(e.taste) meta += "<span class='tag'>" + esc(e.taste) + "口味</span>";
+  meta += "<span class='tag tag-time'>⏱ " + esc(e.time) + "</span>";
+  if(e.level) meta += "<span class='tag'>" + esc(e.level) + "</span>";
+  if(e.servings) meta += "<span class='tag'>" + esc(e.servings) + "</span>";
+  h += "<div class='d-meta'>" + meta + "</div>";
+  if(e.source) h += "<div class='src-note'>" + esc(e.source) + "</div>";
+  if(e.type === "菜谱"){
+    h += "<div class='d-sec'><div class='d-sec-title'>🧂 材料</div><ul class='ing-list'>"
+      + e.ingredients.map(function(x){ return "<li class='ing-item'>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
+    h += "<div class='d-sec'><div class='d-sec-title'>👩‍🍳 步骤</div><div class='step-list'>"
+      + e.steps.map(function(s, i){
+          return "<div class='step-item'><div class='step-num'>" + (i + 1) + "</div>"
+            + "<div class='step-text'>" + esc(s[0]) + "</div>"
+            + "<div class='step-time'>" + esc(s[1]) + "</div></div>";
+        }).join("") + "</div></div>";
+    if(e.heat) h += "<div class='d-sec'><div class='heat-box'><div class='box-label'>🔥 火候提醒</div><div>" + esc(e.heat) + "</div></div></div>";
+    if(e.tips) h += "<div class='d-sec'><div class='tip-box'><div class='box-label'>💡 关键技巧</div><div>" + esc(e.tips) + "</div></div></div>";
+    if(e.buy) h += "<div class='d-sec'><div class='buy-box'><div class='box-label'>🛒 采购提示</div><div>" + esc(e.buy) + "</div></div></div>";
+  } else {
+    e.sections.forEach(function(s){
+      h += "<div class='sec-block'><div class='sec-title'>" + esc(s.t) + "</div><ul class='sec-list'>"
+        + s.items.map(function(x){ return "<li class='sec-item'>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
+    });
+  }
+  modalBox.innerHTML = h;
+  modalMask.classList.add("modal-mask-open");
+  modalBox.scrollTop = 0;
+  document.getElementById("modalClose").addEventListener("click", closeDetail);
+  document.body.style.overflow = "hidden";
+}
+function closeDetail(){
+  modalMask.classList.remove("modal-mask-open");
+  document.body.style.overflow = "";
+}
+modalMask.addEventListener("click", function(ev){ if(ev.target === modalMask) closeDetail(); });
+document.addEventListener("keydown", function(ev){ if(ev.key === "Escape") closeDetail(); });
+
+const darkBtn = document.getElementById("darkBtn");
+function applyDark(on){
+  document.documentElement.classList.toggle("dark", on);
+  darkBtn.textContent = on ? "☀️ 浅色" : "🌙 深色";
+  try{ localStorage.setItem("recipes-dark", on ? "1" : "0"); }catch(err){}
+}
+let initDark = false;
+try{
+  const saved = localStorage.getItem("recipes-dark");
+  initDark = saved !== null ? saved === "1" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}catch(err){}
+applyDark(initDark);
+darkBtn.addEventListener("click", function(){
+  applyDark(!document.documentElement.classList.contains("dark"));
+});
+render();
+</script>
+</body>
+</html>
