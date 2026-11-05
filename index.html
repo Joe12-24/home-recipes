@@ -669,8 +669,8 @@ function render(){
       + "<span class='tag tag-type'>" + esc(e.type) + "</span>";
     if(e.taste) tags += "<span class='tag'>" + esc(e.taste) + "</span>";
     tags += "<span class='tag tag-time'>⏱ " + esc(e.time) + "</span>";
-    card.innerHTML = (e.cover ? "<img class='card-img' loading='lazy' src='" + e.cover + "' alt=''>" : "")
-      + "<div class='card-name'>" + esc(e.name) + "</div>"
+    card.innerHTML = "<div class='card-name'>" + esc(e.name) + "</div>"
+      + (e.cover ? "<img class='card-img' loading='lazy' src='" + e.cover + "' alt=''>" : "")
       + "<div class='card-tags'>" + tags + "</div>"
       + "<div class='card-desc'>" + esc(e.desc) + "</div>";
     card.addEventListener("click", function(){ openDetail(e); });
@@ -696,6 +696,7 @@ function openDetail(e){
   h += "<div class='d-meta'>" + meta + "</div>";
   if(e.source) h += "<div class='src-note'>" + esc(e.source) + "</div>";
   if(e.cover) h += "<img class='d-cover' src='" + e.cover + "' alt=''>";
+  if(e.cover && e.coverFrom) h += "<div class='photo-cap' style='margin:-6px 0 12px'>" + esc(e.coverFrom) + "</div>";
   if(e.type === "菜谱"){
     h += "<div class='d-sec'><div class='d-sec-title'>🧂 材料</div><ul class='ing-list'>"
       + e.ingredients.map(function(x){ return "<li class='ing-item'>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
