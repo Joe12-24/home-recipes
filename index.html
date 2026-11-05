@@ -44,6 +44,12 @@ body{margin:0; background:var(--bg); color:var(--ink); font-size:17px; line-heig
 .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px;
   cursor:pointer; transition:transform 0.2s ease, box-shadow 0.2s ease}
 .card:active{transform:scale(0.98)}
+.card-img{width:100%; height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px; display:block}
+.d-cover{width:100%; border-radius:12px; margin:4px 0 12px; display:block}
+.photo-grid{display:grid; grid-template-columns:1fr; gap:14px}
+.photo-fig{margin:0}
+.photo-img{width:100%; border-radius:10px; display:block}
+.photo-cap{font-size:13px; color:var(--sub); margin-top:6px; text-align:center}
 .card-name{font-size:20px; font-weight:800; margin-bottom:8px}
 .card-tags{display:flex; flex-wrap:wrap; gap:6px}
 .tag{font-size:13px; border-radius:999px; padding:2px 10px; background:var(--chip); color:var(--ink)}
@@ -538,13 +544,79 @@ const ENTRIES = [
   "新鲜是命门：在郑州买不到「几小时内」的肉，就把预期从「复刻汕头老店」降到「吃一顿讲究的清汤鲜牛肉」，汤底和秒数照做，依然好吃。",
   "刀工决定秒数：手切约 2mm 薄片是标准，切厚了涮不熟、切薄了没嚼头；怕切不好就买店里切好的部位拼盘。",
   "部位买不全时：一盘吊龙 + 一盘嫩肉 + 一包手打牛肉丸，就是最小可行的潮汕局，别为凑齐十几个部位硬网购冷冻货。"]}
- ]}
+ ]},
+{id:"dapanji-kuanmian", name:"大盘鸡配皮带面", cuisine:"新疆", type:"菜谱", taste:"味重", time:"约1小时20分（含醒面）", level:"稍有挑战", servings:"3-4人份",
+ desc:"图文版：糖色炒鸡、干辣椒土豆炖到绵软，再浇在现拉的皮带面上。先和面后炖鸡，两边不耽误。",
+ cover:"img/dapanji-cover.jpg",
+ photos:[
+  {src:"img/dapanji-dough.jpg", cap:"和面：300克面粉+3克盐+140克温水，醒10分钟再揉就光；擀成饼抹油再醒半小时"},
+  {src:"img/dapanji-chicken1.jpg", cap:"炒鸡：先炒糖色，鸡块炒干水分，放花椒、辣椒面、干辣椒姜片，生抽盐调味，加开水炖20分钟"},
+  {src:"img/dapanji-chicken2.jpg", cap:"炖鸡后半：加土豆炖到绵软，最后下青椒翻几下就好"},
+  {src:"img/dapanji-noodle.jpg", cap:"煮面：面饼切宽条、手掌按扁、轻轻一拉，开水煮两三开，捞出浇上大盘鸡"}],
+ ingredients:["面粉300克、盐3克、温水140克（面条用）","三黄鸡1只（约1200克）斩块","土豆3个切滚刀块","青椒3-4个手掰成块","干辣椒1把、姜1块切片","花椒1小把","糖1把（炒糖色用，冰糖或白糖）","辣椒面1勺（上色用）","生抽约4-5勺、盐适量、食用油"],
+ steps:[
+  ["和面：面粉加盐，温水少量多次加入，先搅成絮状，再揉成一个偏硬的面团（这会儿揉不光是正常的）","约10分钟"],
+  ["盖盖醒面10分钟，再揉就很容易揉光滑","约15分钟"],
+  ["面团分成3份，擀成薄饼状；盘底喷油放面饼、表面也喷油，盖保鲜膜醒面至少30分钟——趁这段时间炖鸡","约30分钟"],
+  ["炒糖色：油热下糖小火炒化，倒入鸡块，大火炒干水分","约8分钟"],
+  ["放花椒粒接着炒，炒出油脂；加1勺上色辣椒面","约3分钟"],
+  ["加干辣椒和姜片一起翻炒，炒香后倒入足量的生抽和盐","约3分钟"],
+  ["加没过鸡肉的开水，盖盖中小火炖20分钟（原图用三黄鸡，很容易熟；换土鸡延长到35-40分钟）","约20分钟"],
+  ["鸡肉炖好后加入土豆，中小火炖到土豆绵软","约15分钟"],
+  ["土豆熟了倒入青椒，翻炒几下断生就好，汤汁留多一些、等会儿要浇面","约2分钟"],
+  ["煮面：醒好的面饼切宽条、用手掌按扁，轻轻一拉就是皮带面；开水下锅，煮两三开捞出","约5分钟"],
+  ["煮好的面铺在盘底，浇上大盘鸡连汤带菜，就可以开吃了","约1分钟"]],
+ heat:"炒糖色必须小火，糖色发苦整锅就毁了；炖鸡全程中小火；青椒最后下、断生即出，焖黄了就没了脆劲。",
+ tips:"面团偏硬 + 抹油久醒，是皮带面一拉就长的关键；顺序上先和面再炖鸡，两条线并行最省时间；大盘鸡的汤汁宁多勿少，面就是靠汤喂香的。",
+ buy:"三黄鸡在菜市场买现杀的最好；辣椒面选只上色不太辣的品种（如秦椒面）；青椒用大青椒或螺丝椒都行。",
+ source:"图文来源：小红书图文（小红书号 2126962704），2026-11-05 高举提供截图整理；步骤文字按原图标注还原，个别用量为整理时补注。图片版权归原作者，仅自家厨房参考用。"},
+{id:"qingzheng-shibanyu", name:"清蒸石斑鱼", cuisine:"粤菜", type:"菜谱", taste:"清淡", time:"约25分钟", level:"简单", servings:"2-3人份",
+ desc:"图文版，全套12步：淀粉盐搓洗去粘液是去腥第一关，盘底垫筷子、水开蒸10分钟，最后泼热油淋豉油。",
+ cover:"img/shibanyu-cover.jpg",
+ photos:[
+  {src:"img/shibanyu-s1.jpg", cap:"步骤1-6：备料、淀粉加盐搓洗去粘液、划刀切配料、盘底垫筷子、腹内塞姜蒜葱"},
+  {src:"img/shibanyu-s2.jpg", cap:"步骤7-12：表面铺姜蒜葱、水开蒸10分钟、倒掉盘水铺葱丝、泼热油、淋豉油完成"}],
+ ingredients:["石斑鱼1条（约600-750克）","姜1块切丝","蒜4-5瓣切片","香葱1把：一半切丝、一半留葱头段","淀粉1勺+盐1勺（搓洗用）","蒸鱼豉油或生抽约3勺","食用油2勺"],
+ steps:[
+  ["备料：石斑鱼一条处理干净，蒜、姜、香葱备好","约2分钟"],
+  ["鱼身加淀粉和盐，准备搓洗表面的粘液","约1分钟"],
+  ["用手两面揉搓后冲洗干净——粘液洗净才能去腥（搓洗时千万小心鱼刺）","约3分钟"],
+  ["洗净的鱼表面划几刀；姜切丝、蒜切片、葱切丝","约3分钟"],
+  ["准备盘子，底下垫一双筷子（这样鱼的背面不会那么腥）","约1分钟"],
+  ["盘内放入鱼，加姜丝、蒜片、葱头，鱼头内也放点","约1分钟"],
+  ["鱼表面也放上姜丝、蒜片、葱头段","约1分钟"],
+  ["放入蒸锅，水开后蒸10分钟即可（1斤左右的鱼8-10分钟）","约10分钟"],
+  ["蒸熟出锅：抽走底下的筷子，倒掉盘底的水，放入新鲜葱丝","约1分钟"],
+  ["准备一个小锅，倒入适量油烧开","约1分钟"],
+  ["油烧到冒烟左右，往鱼表面泼上适量热油激香","约1分钟"],
+  ["再倒入适量酱油或蒸鱼豉油即可，不需要放盐，完成","约1分钟"]],
+ heat:"蒸鱼只认两点：水开再入锅、时间宁短勿长，肉刚离骨是最嫩的点；泼的油必须烧到冒烟，葱香才激得出来。",
+ tips:"淀粉+盐搓洗去粘液是这条鱼不腥的根本；蒸出的盘底水一定倒掉，那就是腥味的来源；豉油沿盘边淋，别直接浇在鱼肉上。",
+ buy:"石斑鱼买活鱼现杀，珍珠龙胆、老虎斑都行；郑州海鲜市场和盒马有售，价格偏高，来客或给婷婷补营养时做一条正合适。",
+ source:"图文来源：小红书图文（小红书号 385707004），2026-11-05 高举提供截图整理；步骤文字按原图1-12步标注还原。图片版权归原作者，仅自家厨房参考用。"},
+{id:"henan-huimian", name:"河南烩面（羊肉）", cuisine:"豫菜", type:"菜谱", taste:"家常", time:"约2小时（含熬汤醒面；买烩面坯约45分钟）", level:"稍有挑战", servings:"3-4人份",
+ desc:"郑州人的主场：羊骨羊肉熬一锅白汤，面片抹油醒透、手扯成宽面，海带豆腐丝黄花菜粉条一碗端。单开一篇，在家也能复刻合记的路子。",
+ ingredients:["羊腿肉500克、羊骨500克（熬汤）","姜、葱、花椒、八角，白芷1片（可选）","高筋面粉500克、盐5克、温水约260克（和面；或直接买烩面坯）","海带丝、豆腐丝、黄花菜、粉条、木耳各适量","鹌鹑蛋8-10个煮熟剥壳","香菜、青蒜或蒜苗","辣椒油、盐、白胡椒粉"],
+ steps:[
+  ["熬汤：羊肉、羊骨冷水下锅焯透、洗净，加足量水和姜葱香料，大火烧开撇沫，转小火熬1.5-2小时，熬到汤白肉烂","约2小时"],
+  ["和面（买坯可跳过）：面粉加盐用温水和成偏硬面团，揉匀，盖盖醒20分钟","约25分钟"],
+  ["面团搓条下剂（约100克一个），擀成椭圆面片，两面抹油，叠放盖保鲜膜再醒30分钟以上","约35分钟"],
+  ["羊肉捞出切片；海带丝、豆腐丝、黄花菜、粉条、木耳提前泡发处理好，鹌鹑蛋煮熟剥壳","约10分钟"],
+  ["扯面：面片双手捏住两头均匀拉长，再从中间撕开成两条宽面（一片出两根）","约3分钟"],
+  ["原汤烧开，先下海带、豆腐丝、黄花菜、粉条、木耳煮2分钟，再逐片下扯好的面煮熟","约5分钟"],
+  ["连汤带面盛碗，放上羊肉片和鹌鹑蛋，盐和白胡椒在汤里调好，撒香菜、蒜苗","约2分钟"],
+  ["上桌配一勺辣椒油、一碟糖蒜，按个人口味加","约1分钟"]],
+ heat:"汤要全程保持滚开，面下锅才不坨；面片逐片扯、逐片下，别一次全扯好堆在一起。",
+ tips:"烩面的魂是汤：羊骨和羊肉同熬、香料只放基础几样，汤白味正不膻；面片抹油久醒才扯得长不断；赶时间就买现成烩面坯，先把汤和配菜练好。",
+ buy:"羊腿肉和羊骨在菜市场羊肉摊一次买齐，请摊主把骨头剁开；烩面坯在郑州面食店、菜市场面条摊和盒马都有卖，新手先从买坯开始练。",
+ source:"妈妈模式整理（郑州羊肉烩面通行做法），2026-11-05 应高举要求单开一篇；无配图，后续可补自家实拍。"}
+
 ];
 </script>
 <script>
 "use strict";
 const state = {cuisine:"全部", type:"全部", taste:"全部", kw:""};
-const CUISINES = ["全部","川菜","湘菜","家常","火锅"];
+const CUISINES = ["全部","川菜","湘菜","家常","新疆","粤菜","豫菜","火锅"];
 const TYPES = ["全部","菜谱","讨论"];
 const TASTES = ["全部","清淡","家常","味重"];
 const grid = document.getElementById("grid");
@@ -597,7 +669,8 @@ function render(){
       + "<span class='tag tag-type'>" + esc(e.type) + "</span>";
     if(e.taste) tags += "<span class='tag'>" + esc(e.taste) + "</span>";
     tags += "<span class='tag tag-time'>⏱ " + esc(e.time) + "</span>";
-    card.innerHTML = "<div class='card-name'>" + esc(e.name) + "</div>"
+    card.innerHTML = (e.cover ? "<img class='card-img' loading='lazy' src='" + e.cover + "' alt=''>" : "")
+      + "<div class='card-name'>" + esc(e.name) + "</div>"
       + "<div class='card-tags'>" + tags + "</div>"
       + "<div class='card-desc'>" + esc(e.desc) + "</div>";
     card.addEventListener("click", function(){ openDetail(e); });
@@ -622,6 +695,7 @@ function openDetail(e){
   if(e.servings) meta += "<span class='tag'>" + esc(e.servings) + "</span>";
   h += "<div class='d-meta'>" + meta + "</div>";
   if(e.source) h += "<div class='src-note'>" + esc(e.source) + "</div>";
+  if(e.cover) h += "<img class='d-cover' src='" + e.cover + "' alt=''>";
   if(e.type === "菜谱"){
     h += "<div class='d-sec'><div class='d-sec-title'>🧂 材料</div><ul class='ing-list'>"
       + e.ingredients.map(function(x){ return "<li class='ing-item'>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
@@ -639,6 +713,10 @@ function openDetail(e){
       h += "<div class='sec-block'><div class='sec-title'>" + esc(s.t) + "</div><ul class='sec-list'>"
         + s.items.map(function(x){ return "<li class='sec-item'>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
     });
+  }
+  if(e.photos && e.photos.length){
+    h += "<div class='d-sec'><div class='d-sec-title'>📷 步骤图（原图）</div><div class='photo-grid'>"
+      + e.photos.map(function(ph){ return "<figure class='photo-fig'><img class='photo-img' loading='lazy' src='" + ph.src + "' alt=''><figcaption class='photo-cap'>" + esc(ph.cap) + "</figcaption></figure>"; }).join("") + "</div></div>";
   }
   modalBox.innerHTML = h;
   modalMask.classList.add("modal-mask-open");
